@@ -1,5 +1,6 @@
 name: process_value
 description: A declarative representation of a process
+repository: https://github.com/timcreatedit/process_value
 version: 0.1.0+1
 
 
