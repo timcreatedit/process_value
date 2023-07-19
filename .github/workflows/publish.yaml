@@ -1,0 +1,18 @@
+name: publish
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_pub_publish.yml@v1
+    with:
+      dart_sdk: 'stable'
+      pub_credentials: secrets.PUB_CREDENTIALS

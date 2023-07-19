@@ -9,6 +9,16 @@ import 'package:meta/meta.dart';
 sealed class ProcessValue<T> {
   /// {@macro process_value}
   const ProcessValue();
+
+  /// {@macro process_data}
+  const factory ProcessValue.data(T value) = ProcessData<T>;
+
+  /// {@macro process_loading}
+  const factory ProcessValue.loading(double progress) = ProcessLoading<T>;
+
+  /// {@macro process_error}
+  const factory ProcessValue.error(Object error, {StackTrace? stackTrace}) =
+      ProcessError<T>;
 }
 
 /// {@template process_data}
@@ -83,7 +93,7 @@ class ProcessError<T> extends ProcessValue<T> {
   final StackTrace? stackTrace;
 
   @override
-  String toString() => 'ProcessError<$T>($error, $stackTrace)';
+  String toString() => 'ProcessError<$T>($error)';
 
   @override
   bool operator ==(Object other) =>
