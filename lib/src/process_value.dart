@@ -83,7 +83,7 @@ class ProcessError<T> extends ProcessValue<T> {
   final StackTrace? stackTrace;
 
   @override
-  String toString() => 'ProcessError<$T>($error, $stackTrace)';
+  String toString() => 'ProcessError<$T>($error)';
 
   @override
   bool operator ==(Object other) =>
