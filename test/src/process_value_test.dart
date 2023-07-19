@@ -4,7 +4,7 @@ import 'package:process_value/process_value.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group(ProcessValue, () {
+  group("ProcessValue", () {
     test("sealed union has three types", () async {
       // This test won't compile if the shape of the union changes.
       const ProcessValue<int> sut = ProcessData(42);
@@ -18,8 +18,26 @@ void main() {
       }
       expect(true, true);
     });
+
+    group(".data", () {
+      test("creates a ProcessData", () async {
+        expect(ProcessValue.data(42), ProcessData(42));
+      });
+    });
+
+    group(".loading", () {
+      test("creates a ProcessLoading", () async {
+        expect(ProcessValue<int>.loading(0.5), ProcessLoading<int>(0.5));
+      });
+    });
+
+    group(".error", () {
+      test("creates a ProcessError", () async {
+        expect(ProcessValue<int>.error("oops"), ProcessError<int>("oops"));
+      });
+    });
   });
-  group(ProcessData, () {
+  group("ProcessData", () {
     test("value equality", () async {
       expect(const ProcessData(42), const ProcessData(42));
       expect(const ProcessData(42), isNot(const ProcessData(43)));
@@ -34,7 +52,7 @@ void main() {
     });
   });
 
-  group(ProcessLoading, () {
+  group("ProcessLoading", () {
     test("value equality", () async {
       expect(ProcessLoading<int>(0.5), ProcessLoading<int>(0.5));
     });
@@ -54,7 +72,7 @@ void main() {
     });
   });
 
-  group(ProcessError, () {
+  group("ProcessError", () {
     test("value equality", () async {
       final exception = Exception();
       expect(ProcessError<int>(exception), ProcessError<int>(exception));
