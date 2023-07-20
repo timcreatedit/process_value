@@ -19,6 +19,26 @@ sealed class ProcessValue<T> {
   /// {@macro process_error}
   const factory ProcessValue.error(Object error, {StackTrace? stackTrace}) =
       ProcessError<T>;
+
+  /// Tries to map this [ProcessValue] to another [ProcessValue] using the
+  /// provided [mapper] function.
+  ///
+  /// Forwards [ProcessLoading] and [ProcessError] values. If an error occurs
+  /// in the [mapper] function, a [ProcessError] is returned.
+  ProcessValue<R> whenData<R>(R Function(T value) mapper) {
+    switch (this) {
+      case (ProcessData(:final value)):
+        try {
+          return ProcessValue.data(mapper(value));
+        } catch (e, s) {
+          return ProcessValue.error(e, stackTrace: s);
+        }
+      case (ProcessLoading(:final progress)):
+        return ProcessLoading(progress);
+      case (ProcessError(:final error, :final stackTrace)):
+        return ProcessValue.error(error, stackTrace: stackTrace);
+    }
+  }
 }
 
 /// {@template process_data}
