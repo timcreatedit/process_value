@@ -22,7 +22,10 @@ sealed class ProcessValue<T> {
 
   /// Tries to map this [ProcessValue] to another [ProcessValue] using the
   /// provided [mapper] function.
-  ProcessValue<R> mapData<R>(R Function(T value) mapper) {
+  ///
+  /// Forwards [ProcessLoading] and [ProcessError] values. If an error occurs
+  /// in the [mapper] function, a [ProcessError] is returned.
+  ProcessValue<R> whenData<R>(R Function(T value) mapper) {
     switch (this) {
       case (ProcessData(:final value)):
         try {
