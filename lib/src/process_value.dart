@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:meta/meta.dart';
 
 /// {@template process_value}
@@ -30,6 +32,28 @@ sealed class ProcessValue<T> {
       case (ProcessData(:final value)):
         try {
           return ProcessValue.data(mapper(value));
+        } catch (e, s) {
+          return ProcessValue.error(e, stackTrace: s);
+        }
+      case (ProcessLoading(:final progress)):
+        return ProcessLoading(progress);
+      case (ProcessError(:final error, :final stackTrace)):
+        return ProcessValue.error(error, stackTrace: stackTrace);
+    }
+  }
+
+  /// Tries to map this [ProcessValue] to another [ProcessValue] using a an
+  /// async [mapper] function.
+  ///
+  /// Forwards [ProcessLoading] and [ProcessError] values. If an error occurs
+  /// in the [mapper] function, a [ProcessError] is returned.
+  Future<ProcessValue<R>> whenDataAsync<R>(
+    FutureOr<R> Function(T value) mapper,
+  ) async {
+    switch (this) {
+      case (ProcessData(:final value)):
+        try {
+          return ProcessValue.data(await mapper(value));
         } catch (e, s) {
           return ProcessValue.error(e, stackTrace: s);
         }

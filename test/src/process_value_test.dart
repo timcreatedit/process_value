@@ -64,6 +64,37 @@ void main() {
         expect(result, (r) => r is ProcessError<String> && r.error == "oops");
       });
     });
+
+    group("whenDataAsync", () {
+      test("maps value correctly", () async {
+        final sut = ProcessData(42);
+        final result = sut.whenDataAsync((value) => value.toString());
+        expect(await result, ProcessData("42"));
+      });
+      test("returns error when mapping fails", () async {
+        final sut = ProcessData("fourtytwo");
+        final result = sut.whenDataAsync(int.parse);
+        expect(
+          await result,
+          // ignore: inference_failure_on_untyped_parameter
+          (r) => r is ProcessError<int> && r.error is FormatException,
+        );
+      });
+      test("forwards progress", () async {
+        final sut = ProcessValue<int>.loading(0.5);
+        final result = sut.whenDataAsync((value) => value.toString());
+        expect(await result, ProcessLoading<String>(0.5));
+      });
+      test("forwards error", () async {
+        final sut = ProcessValue<int>.error("oops");
+        final result = sut.whenDataAsync((value) => value.toString());
+        expect(
+          await result,
+          // ignore: inference_failure_on_untyped_parameter
+          (r) => r is ProcessError<String> && r.error == "oops",
+        );
+      });
+    });
   });
   group("ProcessData", () {
     test("value equality", () async {
